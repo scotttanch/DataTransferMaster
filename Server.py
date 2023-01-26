@@ -77,12 +77,14 @@ def serverHandler():
     return 
 
 def main():
+    # This whole timing thing is only relevant to the testing form
     while True:
         try:
             # create a time object
             now = datetime.now()
             # find the number of seconds to the next half hour
             sec_to_wait = (30 - (now.minute % 30))*60
+            print("Waiting for next event....(" + str(sec_to_wait/60)+ " minutes)")
             time.sleep(sec_to_wait)
             serverHandler()
         except KeyboardInterrupt:

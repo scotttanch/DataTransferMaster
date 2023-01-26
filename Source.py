@@ -7,8 +7,8 @@ import cv2
 # TODO: Implement a config file so i can remove system paths and IPs
 # Constants to be configed
 search_path = "/home/stanch/public/DZTs"
-#Host = '65.183.134.63'
-Host = '192.168.1.206'
+Host = '65.183.134.63'
+#Host = '192.168.1.206'
 Port = 55
 delay = 30
 
@@ -103,12 +103,14 @@ def clientHandler():
     return
 
 def main():
+    # This whole timing thing is only relevant to the testing form
     while True:
         try:
             # create a time object
             now = datetime.now()
             # find the number of seconds to the next half hour
             sec_to_wait = (30 - (now.minute % 30))*60
+            print("Waiting for next event....(" + str(sec_to_wait/60)+ " minutes)")
             time.sleep(sec_to_wait)
             clientHandler()
         except KeyboardInterrupt:
