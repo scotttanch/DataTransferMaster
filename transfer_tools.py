@@ -83,7 +83,7 @@ def gen_send(conn,obj):
 #     realsense_contents (bin): binary string contraining the survey path
 class DZT_DAT:
     def __init__(self,path):
-        
+
         self.file_name = path
         with open(self.file_name,'rb') as f:
             self.dzt_contents = f.read()
@@ -111,4 +111,8 @@ class DZT_DAT:
         plt.savefig(self.file_name.split('.')[0]+".png",format='png')
         return
         
-        
+def reportReader():
+    return
+
+def configReader():
+    return 
