@@ -1,23 +1,24 @@
-#import pickle
-import gc
 import socket
 import transfer_tools as tls
-#import time
+import time
 import os
 import cv2
+from datetime import datetime
 
-print("Waiting for Connection to Client")
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    # Begin listening at the desired port
-    Host = "192.168.0.197"
-    #Host = '127.0.0.1'
-    Port = 55
-    s.bind((Host, Port))
-    s.listen()
-    project_directory = 'C:\\Users\STanch\\Desktop\\Surveys\\'
-    Continuous_Run = True
-    # Accept connection to the source
-    while Continuous_Run:
+# TODO: Implement a config file so i can remove system paths and IPs
+# Constants to be configed
+
+def serverHandler():
+    print("Waiting for Connection to Client")
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        # Begin listening at the desired port
+        Host = "192.168.0.197"
+        #Host = '127.0.0.1'
+        Port = 55
+        s.bind((Host, Port))
+        s.listen()
+        project_directory = 'C:\\Users\STanch\\Desktop\\Surveys\\'
+        # Accept connection to the source
         conn, addr = s.accept()
         print("Establishing New Connection...")
         print('Connected to', addr)
@@ -31,6 +32,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 # This should be what to do with a provided directory or command
                 if type(recv_obj) == str:
                     # Is the string a command or a directory?
+
                     if recv_obj.startswith('COM'):
                         # Commands go here
                         command = recv_obj.split(' ')[-1]
@@ -38,9 +40,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                             print("Closing socket")
                             tls.gen_send(conn, "ACK")
                             break
-                        if command == "testing":
-                            print("Enabling Testing mode...")
-                            testing_mode = True
+
                     if recv_obj.startswith('DIR'):
                         directory = recv_obj.split(' ')[-1]
                         if not os.path.exists(project_directory + directory):
@@ -65,6 +65,30 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                             f.write(recv_obj.realsense_contents)
                     print("Generating B Scan")
                     recv_obj.b_scan()
+                    start_timer = time.monotonic_ns()
+
+                    # What ever processing were doing goes here
                     b_scan = cv2.imread(recv_obj.file_name.split('.')[0]+".png")
+                    
+                    stop_timer = time.monotonic_ns()
+                    process_time = stop_timer-start_timer
                     tls.gen_send(conn, b_scan)
-        gc.collect()
+                    tls.gen_send(conn, process_time)
+    return 
+
+def main():
+    while True:
+        try:
+            # create a time object
+            now = datetime.now()
+            # find the number of seconds to the next half hour
+            sec_to_wait = (30 - (now.minute % 30))*60
+            time.sleep(sec_to_wait)
+            serverHandler()
+        except KeyboardInterrupt:
+            break
+    return
+
+
+if __name__ == "__main__":
+    main()
