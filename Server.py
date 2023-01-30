@@ -4,6 +4,7 @@ import time
 import os
 import cv2
 from datetime import datetime
+import gc
 
 # TODO: Implement a config file so i can remove system paths and IPs
 # Constants to be configed
@@ -74,6 +75,9 @@ def serverHandler():
                     process_time = stop_timer-start_timer
                     tls.gen_send(conn, b_scan)
                     tls.gen_send(conn, process_time)
+
+                    del b_scan
+                    gc.collect()
     return 
 
 def main():
