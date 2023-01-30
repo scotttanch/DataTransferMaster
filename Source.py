@@ -9,7 +9,7 @@ import cv2
 search_path = "/home/stanch/public/DZTs"
 Host = '65.183.134.63'
 #Host = '192.168.1.206'
-Port = 55
+Port = 56
 delay = 30
 
 
@@ -63,8 +63,8 @@ def clientHandler():
                     while request_stack != []:
                         next_file = request_stack.pop()
                         print("Sending ",next_file)
-                        start_send_timer = time.monotonic_ns()
                         next_dzt = tls.DZT_DAT(next_file)
+                        start_send_timer = time.monotonic_ns()
                         tls.gen_send(s,next_dzt)
                         ACK_response = tls.gen_recv(s)
                         end_send_timer = time.monotonic_ns()
