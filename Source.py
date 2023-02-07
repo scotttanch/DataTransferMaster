@@ -48,7 +48,7 @@ def clientHandler():
                 # We want the full stack
 
                 print("Sending Source Stack...")
-                source_stack = tls.full_stack(search_path)
+                source_stack = tls.full_stack(search_path,"DZT")
                 tls.gen_send(s,source_stack)
                 request_stack = tls.gen_recv(s)
 
@@ -71,10 +71,10 @@ def clientHandler():
                         b_scan = tls.gen_recv(s)
                         
                         # Get/Calucalte Metrics and write them to the report file
-                        size = (len(next_dzt.dzt_contents)+len(next_dzt.realsense_contents))/1000   # Obj size in Kilobytes (kinda)
+                        size = (len(next_dzt.dzt_contents)+len(next_dzt.realsense_contents))/1000   # File sizes in Kilobytes
                         processing_time = tls.gen_recv(s)                                           # Time to process in Ns
                         sending_time = end_send_timer - start_send_timer                            # Time to send in Ns
-                        sending_rate = (size*8)/(sending_time*(10**-9)*(10**6))                     # Rate in Megabits/s
+                        sending_rate = (size*8)/(sending_time*(10**-9)*(10**3))                     # Rate in Megabits/s
                         with open("/home/stanch/public/reports/"+directory+"_Report.txt", 'a+') as f:
                             line = next_file.split('.')[0] + "," + str(size) + "," + str(processing_time) + "," + str(sending_time) + "," + str(sending_rate) + "\n"
                             f.write(line)

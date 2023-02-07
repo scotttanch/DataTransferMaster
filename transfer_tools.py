@@ -11,14 +11,14 @@ from mpl_toolkits.mplot3d import Axes3D
 # returns a list of DZT files created on the current date, sorted by creation time
 # in: absolute path of the desired folder
 # out: list containing absolute paths of DZT files
-def todays_stack(search_dir):
+def todays_stack(search_dir:str , ext:str) -> list[str]:
     os.chdir(search_dir)
     delimiter = os.sep #this might not work
     files = filter(os.path.isfile, os.listdir(search_dir))
     files = [os.path.join(search_dir, f) for f in files]
     filtered = []
     for f in files:
-        if (f.split(".")[1] == "DZT") and (dt.fromtimestamp(os.path.getmtime(f))+td(days=1) > dt.today()):
+        if (f.split(".")[1] == ext) and (dt.fromtimestamp(os.path.getmtime(f))+td(days=1) > dt.today()):
             filtered.append(f.split(delimiter)[-1])
     filtered.sort(key=lambda x: os.path.getmtime(x))
     return filtered
@@ -26,14 +26,14 @@ def todays_stack(search_dir):
 # returns a list of DZT files in a directory, sorted by creation time
 # in: absolute path of the desired folder
 # out: list containing absolute paths of DZT files
-def full_stack(search_dir):
+def full_stack(search_dir:str, ext:str) -> list[str]:
     os.chdir(search_dir)
     delimiter = os.sep #this might not  work
     files = filter(os.path.isfile, os.listdir(search_dir))
     files = [os.path.join(search_dir, f) for f in files]
     filtered = []
     for f in files:
-        if (f.split(".")[1] == "DZT"):
+        if (f.split(".")[1] == ext):
             filtered.append(f.split(delimiter)[-1])
     filtered.sort(key=lambda x: os.path.getmtime(x))
     return filtered
@@ -68,12 +68,11 @@ def gen_recv(conn):
     recv_obj = pickle.loads(recv_bin)
     return recv_obj
 
-def gen_send(conn,obj):
+def gen_send(conn,obj:object):
     pickled = pickle.dumps(obj)+('EOP').encode()
     conn.send(pickled)
     return
     
-
 # DZT Class
 # Atributes:
 #     origin_path (str): absolute path of the file on the source system
@@ -82,7 +81,7 @@ def gen_send(conn,obj):
 #     dzt_contents (bin): binary string containing the actual file data
 #     realsense_contents (bin): binary string contraining the survey path
 class DZT_DAT:
-    def __init__(self,path):
+    def __init__(self,path:str):
 
         self.file_name = path
         with open(self.file_name,'rb') as f:
@@ -92,16 +91,15 @@ class DZT_DAT:
         
         # Try to find real sense data 3 times before proceeding
         attempt = 0
-        while attempt <= 3:
+        while not self.realsense_contents and attempt < 3:
             try:
                 with open(self.realsense_file,'rb') as f:
                     self.realsense_contents = f.read()
             except:
                 print("Looking for realsense data...")
                 attempt += 1
-                time.sleep(5)
-                    
-  
+                time.sleep(2)
+                
     def b_scan(self):
         header,array,_ = readdzt(self.file_name)
         traces = array[0]

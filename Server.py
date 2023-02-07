@@ -51,7 +51,7 @@ def serverHandler():
                 # This should be what to do with the source_stack
                 if type(recv_obj) == list:
                     source_list = recv_obj
-                    server_list = tls.full_stack(project_directory+directory)
+                    server_list = tls.full_stack(project_directory+directory,"DZT")
                     requests = list(set(source_list)-set(server_list))
                     tls.gen_send(conn, requests)
 
@@ -59,11 +59,13 @@ def serverHandler():
                 if type(recv_obj) == tls.DZT_DAT:
                     tls.gen_send(conn, "ACK")
                     print("Recvied: ", recv_obj.file_name)
+                    
                     with open(recv_obj.file_name, 'wb+') as f:
                         f.write(recv_obj.dzt_contents)
                     if recv_obj.realsense_contents:
                         with open(recv_obj.realsense_file, 'wb+') as f:
                             f.write(recv_obj.realsense_contents)
+
                     print("Generating B Scan")
                     recv_obj.b_scan()
                     start_timer = time.monotonic_ns()
@@ -91,6 +93,7 @@ def main():
             print("Waiting for next event....(" + str(sec_to_wait/60)+ " minutes)")
             time.sleep(sec_to_wait)
             serverHandler()
+            gc.collect()
         except KeyboardInterrupt:
             break
     return

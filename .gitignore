@@ -128,5 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Reports Folder
+# Folders to ignore
 reports/
+testing/

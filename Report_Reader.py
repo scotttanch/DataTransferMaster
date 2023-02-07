@@ -6,7 +6,7 @@ from datetime import timedelta as td
 import pandas as pd
 
 # Location of the report files and the stack containing them
-report_folder = "C:\\Users\\Scott\\Documents\\GitHub\\DataTransferMaster"
+report_folder = "C:\\Users\\Scott\\Documents\\GitHub\\DataTransferMaster\\reports\\"
 file_paths = tls.full_stack(report_folder,"txt")
 
 # Session report class definition
@@ -22,27 +22,30 @@ class Session_Report:
 
         tmp = []
         for line in self.data:
-            tmp.append(float(line.split(',')[4]))
-        self.avg_Bit = np.mean(tmp)
-        self.std_Bit = np.std(tmp)
+            val = float(line.split(',')[4])
+            tmp.append(val)
+        self.avg_Bit = np.mean(tmp)*1000          # the *1000 stays until i push the new code out that deals with the 
+        self.std_Bit = np.std(tmp)*1000           # fact that i divided by 1000 one too many times
 
         tmp = []
         for line in self.data:
-            tmp.append(float(line.split(',')[2]))
+            val = float(line.split(',')[2])
+            tmp.append(val)
         self.avg_P = np.mean(tmp)*(10**-9)
         self.std_P = np.std(tmp)*(10**-9)
         
         tmp = []
         for line in self.data:
-            tmp.append(float(line.split(',')[3]))
+            val = float(line.split(',')[3])
+            tmp.append(val)
         self.avg_S = np.mean(tmp)*(10**-9)
         self.std_S = np.std(tmp)*(10**-9)
     
     def print(self):
         print("Report: ", self.name)
         print("Created on: ",self.creation_date," at ",self.creation_time)
-        print("Average Acknowledgement time: ",self.avg_TwT," (s)")
-        print("Average Processing time: ",self.avg_TwTP," (s)")
+        print("Average Acknowledgement time: ",self.avg_S," (s)")
+        print("Average Processing time: ",self.avg_P," (s)")
         print("Average Bit Rate: ",self.avg_Bit,"+\-",self.std_Bit,"(Mb/s)")
 
 # Create an empty list that will have session reports as its elements, sorted by the date atribute
@@ -72,6 +75,12 @@ labels = []
 for date in ticks:
     string = str(date.month) + "/" + str(date.day) + " " + str(date.hour) + ":" + str(date.minute)
     labels.append(string)
+
+# Print some values
+avg_sending = np.mean(S_Times)
+avg_processing = np.mean(P_Times)
+print("Average time to send: " + str(avg_sending))
+print("Average Processing time: " + str(avg_processing))
 
 # Response Time subplot
 plt.subplot(2,1,2)
