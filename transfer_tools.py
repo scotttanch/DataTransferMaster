@@ -11,7 +11,7 @@ from mpl_toolkits.mplot3d import Axes3D
 # returns a list of DZT files created on the current date, sorted by creation time
 # in: absolute path of the desired folder
 # out: list containing absolute paths of DZT files
-def todays_stack(search_dir:str , ext:str) -> list[str]:
+def todays_stack(search_dir:str , ext:str):
     os.chdir(search_dir)
     delimiter = os.sep #this might not work
     files = filter(os.path.isfile, os.listdir(search_dir))
@@ -26,7 +26,7 @@ def todays_stack(search_dir:str , ext:str) -> list[str]:
 # returns a list of DZT files in a directory, sorted by creation time
 # in: absolute path of the desired folder
 # out: list containing absolute paths of DZT files
-def full_stack(search_dir:str, ext:str) -> list[str]:
+def full_stack(search_dir:str, ext:str):
     os.chdir(search_dir)
     delimiter = os.sep #this might not  work
     files = filter(os.path.isfile, os.listdir(search_dir))
