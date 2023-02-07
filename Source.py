@@ -69,6 +69,7 @@ def clientHandler():
                         ACK_response = tls.gen_recv(s)
                         end_send_timer = time.monotonic_ns()
                         b_scan = tls.gen_recv(s)
+                        tls.gen_send(s, "ACK")
                         
                         # Get/Calucalte Metrics and write them to the report file
                         size = (len(next_dzt.dzt_contents)+len(next_dzt.realsense_contents))/1000   # File sizes in Kilobytes
