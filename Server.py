@@ -78,8 +78,6 @@ def serverHandler():
                     tls.gen_send(conn, b_scan)
                     tls.gen_send(conn, process_time)
 
-                    del b_scan
-                    gc.collect()
     return 
 
 def main():
