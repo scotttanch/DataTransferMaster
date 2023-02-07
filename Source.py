@@ -104,6 +104,7 @@ def clientHandler():
 
 def main():
     # This whole timing thing is only relevant to the testing form
+    clientHandler()
     while True:
         try:
             # create a time object

@@ -84,6 +84,7 @@ def serverHandler():
 
 def main():
     # This whole timing thing is only relevant to the testing form
+    serverHandler()
     while True:
         try:
             # create a time object
