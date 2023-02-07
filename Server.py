@@ -76,7 +76,7 @@ def serverHandler():
                     stop_timer = time.monotonic_ns()
                     process_time = stop_timer-start_timer
                     tls.gen_send(conn, b_scan)
-                    ack_rep = tls.gen_recv()
+                    ack_rep = tls.gen_recv(conn)
                     tls.gen_send(conn, process_time)
 
     return 
