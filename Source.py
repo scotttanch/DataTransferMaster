@@ -3,6 +3,8 @@ import transfer_tools as tls
 import time
 from datetime import datetime
 import cv2
+import os
+import sys
 
 # TODO: Implement a config file so i can remove system paths and IPs
 # Constants to be configed
@@ -11,7 +13,9 @@ Host = '65.183.134.63'
 #Host = '192.168.1.206'
 Port = 56
 delay = 30
-
+SSID_5 = "HustonLab5G"
+SSID_4 = "ALIALIEN7127"
+mode = None
 
 def clientHandler():
 
@@ -52,13 +56,12 @@ def clientHandler():
                 tls.gen_send(s,source_stack)
                 request_stack = tls.gen_recv(s)
 
-                # Create the associated report file
-                with open("/home/stanch/public/reports/"+directory+"_Report.txt", 'a+') as f:
-                    line = "File,Size (Kb),T_p (nS),T_s (nS),Rate (Mbit/s) \n"
-                    f.write(line)
-
                 if request_stack != []:
                     print("Sending Files...")
+                    # Create the associated report file
+                    with open("/home/stanch/public/reports/"+directory+"_Report.txt", 'a+') as f:
+                        line = "File,Mode,Size (Kb),T_p (nS),T_s (nS),T_t (ns),Rate (Mbit/s) \n"
+                        f.write(line)
 
                     while request_stack != []:
                         next_file = request_stack.pop()
@@ -69,20 +72,23 @@ def clientHandler():
                         ACK_response = tls.gen_recv(s)
                         end_send_timer = time.monotonic_ns()
                         b_scan = tls.gen_recv(s)
+                        end_total_timer = time.monotonic_ns()
                         tls.gen_send(s, "ACK")
                         
                         # Get/Calucalte Metrics and write them to the report file
+                        name = next_file.split('.')[0]                                              # File Name
                         size = (len(next_dzt.dzt_contents)+len(next_dzt.realsense_contents))/1000   # File sizes in Kilobytes
                         processing_time = tls.gen_recv(s)                                           # Time to process in Ns
                         sending_time = end_send_timer - start_send_timer                            # Time to send in Ns
+                        total_time = end_total_timer - start_send_timer                             # Total delay time in Ns
                         sending_rate = (size*8)/(sending_time*(10**-9)*(10**3))                     # Rate in Megabits/s
                         with open("/home/stanch/public/reports/"+directory+"_Report.txt", 'a+') as f:
-                            line = next_file.split('.')[0] + "," + str(size) + "," + str(processing_time) + "," + str(sending_time) + "," + str(sending_rate) + "\n"
+                            line =  name + mode + "," + str(size) + "," + str(processing_time) + "," + str(sending_time) + "," +str(total_time) + "," + str(sending_rate) + "\n"
                             f.write(line)
 
 
                         print("/home/stanch/public/b_scans/"+next_file.split('.')[0]+".png")
-                        cv2.imwrite("/home/stanch/public/b_scans/"+next_file.split('.')[0]+".png",b_scan)
+                        cv2.imwrite("/home/stanch/public/b_scans/"+next_file.split('.')[0]+".png", b_scan)
 
                     print("Stack Empty")
                 
@@ -108,15 +114,33 @@ def main():
     clientHandler()
     while True:
         try:
+            
+            # Swith networks before doing anything to give time to get connected?
+            if mode == '4G':
+                mode = '5G'
+                # code to switch to 5G network
+                os.system("nmcli connection down "+SSID_4)
+                os.system("nmcli connection up "+SSID_5)
+
+            else:
+                mode = '4G'
+                os.system("nmcli connection down "+SSID_5)
+                os.system("nmcli connection up "+SSID_4)
+
+            # Find the correct time to the next event at the quarter hour
             # create a time object
             now = datetime.now()
-            # find the number of seconds to the next half hour
-            sec_to_wait = (30 - (now.minute % 30))*60
+            # find the number of seconds to the next quarter hour
+            sec_to_wait = (15 - (now.minute % 15))*60
             print("Waiting for next event....(" + str(sec_to_wait/60)+ " minutes)")
             time.sleep(sec_to_wait)
+
+            # Call the actual handler
             clientHandler()
+
         except KeyboardInterrupt:
             break
+
     return
 
 
