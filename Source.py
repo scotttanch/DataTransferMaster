@@ -128,13 +128,13 @@ def main():
             if mode == '4G':
                 mode = '5G'
                 # code to switch to 5G network
-                output = subprocess.check_output(['sudo','nmcli connection down '+ SSID_4])
-                output = subprocess.check_output(['sudo','nmcli connection down '+ SSID_5])
+                os.system("nmcli connection down " + SSID_4)
+                os.system("nmcli connection up " + SSID_5)
 
             else:
                 mode = '4G'
-                output = subprocess.check_output(['sudo','nmcli connection down '+ SSID_5])
-                output = subprocess.check_output(['sudo','nmcli connection down '+ SSID_4])
+                os.system("nmcli connection down " + SSID_5)
+                os.system("nmcli connection up " + SSID_4)
 
             # Find the correct time to the next event at the quarter hour
             # create a time object
@@ -145,7 +145,7 @@ def main():
             time.sleep(sec_to_wait)
 
             # Call the actual handler
-            output = subprocess.check_output(['sudo', 'iwgetid'])
+            output = subprocess.check_output(['sudo', 'iwgetid']).decode()
             print("Connected Wifi SSID: " + output.split('"')[1])
             clientHandler(mode)
 
