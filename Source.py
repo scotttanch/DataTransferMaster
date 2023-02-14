@@ -111,7 +111,7 @@ def clientHandler(mode: str):
 def main():
 
     # This whole timing thing is only relevant to the testing form
-    output = subprocess.check_output(['sudo', 'iwgetid'])
+    output = subprocess.check_output(['sudo', 'iwgetid']).decode()
     print("Connected Wifi SSID: " + output.split('"')[1])
     
     if output == SSID_4:
