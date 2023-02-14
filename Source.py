@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 import cv2
 import os
-import sys
+import subprocess
 
 # TODO: Implement a config file so i can remove system paths and IPs
 # Constants to be configed
@@ -15,7 +15,7 @@ Port = 56
 delay = 30
 SSID_5 = "HustonLab5G"
 SSID_4 = "ALIALIEN7127"
-mode = None
+mode = "4G"
 
 def clientHandler():
 
@@ -136,6 +136,8 @@ def main():
             time.sleep(sec_to_wait)
 
             # Call the actual handler
+            output = subprocess.check_output(['sudo', 'iwgetid'])
+            print("Connected Wifi SSID: " + output.split('"')[1])
             clientHandler()
 
         except KeyboardInterrupt:
