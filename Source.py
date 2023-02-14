@@ -112,7 +112,7 @@ def main():
 
     # This whole timing thing is only relevant to the testing form
     mode = "4G"
-    output = subprocess.check_output(['sudo', 'iwgetid'])
+    output = subprocess.check_output(['sudo', 'iwgetid']).decode()
     print("Connected Wifi SSID: " + output.split('"')[1])
     clientHandler(mode)
 
