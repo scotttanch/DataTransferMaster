@@ -15,9 +15,8 @@ Port = 56
 delay = 30
 SSID_5 = "HustonLab5G"
 SSID_4 = "ALIALIEN7127"
-mode = "4G"
 
-def clientHandler():
+def clientHandler(mode: str):
 
     print("Waiting for Connection to Host")
 
@@ -83,7 +82,7 @@ def clientHandler():
                         total_time = end_total_timer - start_send_timer                             # Total delay time in Ns
                         sending_rate = (size*8)/(sending_time*(10**-9)*(10**3))                     # Rate in Megabits/s
                         with open("/home/stanch/public/reports/"+directory+"_Report.txt", 'a+') as f:
-                            line =  name + mode + "," + str(size) + "," + str(processing_time) + "," + str(sending_time) + "," +str(total_time) + "," + str(sending_rate) + "\n"
+                            line =  name + "," + mode + "," + str(size) + "," + str(processing_time) + "," + str(sending_time) + "," +str(total_time) + "," + str(sending_rate) + "\n"
                             f.write(line)
 
 
@@ -110,8 +109,13 @@ def clientHandler():
     return
 
 def main():
+
     # This whole timing thing is only relevant to the testing form
-    clientHandler()
+    mode = "4G"
+    output = subprocess.check_output(['sudo', 'iwgetid'])
+    print("Connected Wifi SSID: " + output.split('"')[1])
+    clientHandler(mode)
+
     while True:
         try:
             
@@ -119,13 +123,13 @@ def main():
             if mode == '4G':
                 mode = '5G'
                 # code to switch to 5G network
-                os.system("nmcli connection down "+SSID_4)
-                os.system("nmcli connection up "+SSID_5)
+                os.system("nmcli connection down " + SSID_4)
+                os.system("nmcli connection up " + SSID_5)
 
             else:
                 mode = '4G'
-                os.system("nmcli connection down "+SSID_5)
-                os.system("nmcli connection up "+SSID_4)
+                os.system("nmcli connection down " + SSID_5)
+                os.system("nmcli connection up " + SSID_4)
 
             # Find the correct time to the next event at the quarter hour
             # create a time object
@@ -138,7 +142,7 @@ def main():
             # Call the actual handler
             output = subprocess.check_output(['sudo', 'iwgetid'])
             print("Connected Wifi SSID: " + output.split('"')[1])
-            clientHandler()
+            clientHandler(mode)
 
         except KeyboardInterrupt:
             break
