@@ -31,8 +31,8 @@ class Session_Report:
         for line in self.data:
             val = float(line.split(',')[4])
             tmp.append(val)
-        self.avg_Bit = np.mean(tmp)#*1000          # the *1000 stays until i push the new code out that deals with the 
-        self.std_Bit = np.std(tmp)#*1000           # fact that i divided by 1000 one too many times, Applys to reports created before 2/7/23
+        self.avg_Bit = np.mean(tmp)                      # the *1000 stays until i push the new code out that deals with the 
+        self.std_Bit = np.std(tmp)                    # fact that i divided by 1000 one too many times, Applys to reports created before 2/7/23
 
         tmp = []
         for line in self.data:
