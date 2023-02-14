@@ -114,9 +114,9 @@ def main():
     output = subprocess.check_output(['sudo', 'iwgetid']).decode()
     print("Connected Wifi SSID: " + output.split('"')[1])
     
-    if output == SSID_4:
+    if output.split('"')[1] == SSID_4:
         mode = "4G"
-    if output == SSID_5:
+    if output.split('"')[1] == SSID_5:
         mode = "5G"
 
     clientHandler(mode)
