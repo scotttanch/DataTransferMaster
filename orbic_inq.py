@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.support.wait import WebDriverWait
 
 def hotspot_config(con_file: str):
     try:
@@ -43,7 +44,8 @@ def check_mode(con_file: str) -> str:
     pass_input.send_keys(Keys.RETURN)
 
     # find the technology field on the main page
-    current_val = driver.find_element(By.ID,"technology")
+    #current_val = driver.find_element(By.ID,"technology")
+    current_val = WebDriverWait(driver, timeout=30).until(lambda d: d.find_element(By.ID,"technology"))
     tech = current_val.text
 
     driver.close()
