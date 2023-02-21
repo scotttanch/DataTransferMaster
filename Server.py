@@ -3,8 +3,7 @@ import transfer_tools as tls
 import time
 import os
 import cv2
-from datetime import datetime
-import gc
+import sys
 
 # TODO: Implement a config file so i can remove system paths and IPs
 # Constants to be configed
@@ -79,23 +78,27 @@ def serverHandler():
                     ack_rep = tls.gen_recv(conn)
                     tls.gen_send(conn, process_time)
 
+    # use sys.getrefcount() on all objects from this function. everything should be 1
+    # or just delete them all who cares
+    del s, Host, Port, project_directory, conn, addr, directory, recv_obj, command, source_list, server_list
+    del requests, f, start_timer, stop_timer, b_scan, process_time, ack_rep
     return 
 
 def main():
-    # This whole timing thing is only relevant to the testing form
     serverHandler()
-    while True:
-        try:
-            # create a time object
-            now = datetime.now()
-            # find the number of seconds to the next half hour
-            sec_to_wait = (15 - (now.minute % 15))*60
-            print("Waiting for next event....(" + str(sec_to_wait/60)+ " minutes)")
-            time.sleep(sec_to_wait)
-            serverHandler()
-            gc.collect()
-        except KeyboardInterrupt:
-            break
+    #This whole timing thing is only relevant to the testing form
+    #while True:
+    #    try:
+    #        # create a time object
+    #        now = datetime.now()
+    #        # find the number of seconds to the next half hour
+    #        sec_to_wait = (15 - (now.minute % 15))*60
+    #        print("Waiting for next event....(" + str(sec_to_wait/60)+ " minutes)")
+    #        time.sleep(sec_to_wait)
+    #        serverHandler()
+    #        gc.collect()
+    #    except KeyboardInterrupt:
+    #        break
     return
 
 
