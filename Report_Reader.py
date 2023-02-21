@@ -12,6 +12,10 @@ report_folder = "C:\\Users\\Scott\\Documents\\GitHub\\DataTransferMaster\\report
 file_paths = tls.full_stack(report_folder,"txt")
 delimiter = os.sep
 
+# New file format
+# name, mode, size, processing time, sending time, total time, sending rate
+# str,  str,  kb,   ns,              ns,           ns,         Mb/s
+# 0     1     2     3                4             5           6
 
 # Session report class definition
 class Session_Report:
@@ -23,37 +27,50 @@ class Session_Report:
         self.creation_date = datetime.strptime(self.time_string,"%m-%d-%Y::%H-%M")
         with open(self.name+'.txt', 'r') as f:
             self.data = f.readlines()[1:]
-        
-        if self.data[-1].split(',')[0] == 'File':       # I accidently made the reports write the column labels on the top and bottom
-            self.data = self.data[1:-1]                 # I'm calling it a feature not a bug, this deals with that feature
-                                                   
-        tmp = []
-        for line in self.data:
-            val = float(line.split(',')[4])
-            tmp.append(val)
-        self.avg_Bit = np.mean(tmp)                      # the *1000 stays until i push the new code out that deals with the 
-        self.std_Bit = np.std(tmp)                    # fact that i divided by 1000 one too many times, Applys to reports created before 2/7/23
 
-        tmp = []
-        for line in self.data:
-            val = float(line.split(',')[2])
-            tmp.append(val)
-        self.avg_P = np.mean(tmp)*(10**-9)
-        self.std_P = np.std(tmp)*(10**-9)
-        
+        # Extract the network mode
+        self.mode = self.data[0].split(',')[1]
+
+        # Extract Processing Time
         tmp = []
         for line in self.data:
             val = float(line.split(',')[3])
             tmp.append(val)
+        self.avg_P = np.mean(tmp)*(10**-9)
+        self.std_P = np.std(tmp)*(10**-9)
+        
+        # Extract Sending Time
+        tmp = []
+        for line in self.data:
+            val = float(line.split(',')[4])
+            tmp.append(val)
         self.avg_S = np.mean(tmp)*(10**-9)
         self.std_S = np.std(tmp)*(10**-9)
+
+        # Extract Total Time
+        tmp = []
+        for line in self.data:
+            val = float(line.split(',')[5])
+            tmp.append(val)
+        self.avg_R = np.mean(tmp)*(10**-9)
+        self.std_R = np.std(tmp)*(10**-9) 
+
+        # Extract processing Bit rate                                       
+        tmp = []
+        for line in self.data:
+            val = float(line.split(',')[6])
+            tmp.append(val)
+        self.avg_Bit = np.mean(tmp)                    
+        self.std_Bit = np.std(tmp)  
     
     def print(self):
         print("Report: ", self.name)
         print("Created on: ",self.creation_date," at ",self.creation_time)
+        print("Technology: ",self.mode)
         print("Average Acknowledgement time: ",self.avg_S," (s)")
         print("Average Processing time: ",self.avg_P," (s)")
-        print("Average Bit Rate: ",self.avg_Bit,"+\-",self.std_Bit,"(Mb/s)")
+        print("Average Round Trip ",self.avg_R,"+\-",self.std_R," (s)")
+        print("Average Bit Rate: ",self.avg_Bit,"+\-",self.std_Bit," (Mb/s)")
 
 # Create an empty list that will have session reports as its elements, sorted by the date atribute
 reports = []
@@ -62,49 +79,72 @@ for file in file_paths:
 reports.sort(key=lambda x: x.creation_date)
 
 # Empty lists for the things that will be ploted
-Bit_rates = []
-Bit_stds = []
-S_Times = []
-P_Times = []
-Dates = []
+Bit_rates_4 = []
+Bit_stds_4 = []
+S_Times_4 = []
+P_Times_4 = []
+R_Times_4 = []
+Dates_4 = []
+
+Bit_rates_5 = []
+Bit_stds_5 = []
+S_Times_5 = []
+P_Times_5 = []
+R_Times_5 = []
+Dates_5 = []
 
 # Populate the empty lists
 for report in reports:
-    Dates.append(report.creation_date)
-    Bit_rates.append(report.avg_Bit)
-    Bit_stds.append(report.std_Bit)
-    S_Times.append(report.avg_S)
-    P_Times.append(report.avg_P)
+    if report.mode == '4G':
+        Dates_4.append(report.creation_date)
+        Bit_rates_4.append(report.avg_Bit)
+        Bit_stds_4.append(report.std_Bit)
+        S_Times_4.append(report.avg_S)
+        P_Times_4.append(report.avg_P)
+        R_Times_4.append(report.avg_R)
+    else:
+        Dates_5.append(report.creation_date)
+        Bit_rates_5.append(report.avg_Bit)
+        Bit_stds_5.append(report.std_Bit)
+        S_Times_5.append(report.avg_S)
+        P_Times_5.append(report.avg_P)
+        R_Times_5.append(report.avg_R)
 
 # Create a set of tick marks and their labels
-ticks = pd.date_range(min(Dates),max(Dates),6)
+ticks = pd.date_range(min(Dates_4),max(Dates_4),6)
 labels = []
 for date in ticks:
     string = str(date.month) + "/" + str(date.day) + " " + str(date.hour).zfill(2) + ":" + str(date.minute).zfill(2)
     labels.append(string)
 
 # Print some values
-avg_sending = np.mean(S_Times)
-avg_processing = np.mean(P_Times)
-avg_bit = np.mean(Bit_rates)
+avg_sending = np.mean(S_Times_4)
+avg_processing = np.mean(P_Times_4)
+avg_bit = np.mean(Bit_rates_4)
+avg_round = np.mean(R_Times_4)
 print("Average Time to send: " + str(round(avg_sending,3)) + " (s)")
 print("Average Processing time: " + str(round(avg_processing,3)) +" (s)" )
+print("Average Round Trip: " + str(round(avg_round,3)) + " (s)")
 print("Average Speed: " + str(round(avg_bit,3)) + " (Mb/s)")
 
 # Response Time subplot
 plt.subplot(2,1,2)
-plt.plot(Dates,S_Times)
-plt.plot(Dates,P_Times)
-plt.legend(["ACK","Processed"])
-plt.title("Response and Processing Times")
+plt.plot(Dates_4,S_Times_4)
+plt.plot(Dates_4,R_Times_4)
+plt.plot(Dates_5,S_Times_5)
+plt.plot(Dates_5,R_Times_5)
+plt.legend(["4G ACK"," 4G Round Trip","5G ACK"," 5G Round Trip"])
+plt.title("Response and Round Trip Time")
 plt.ylabel("Time (s)")
 plt.xticks(ticks,labels,rotation=15)
 
 # Bit Rate Subplot
 plt.subplot(2,1,1)
-plt.plot(Dates,Bit_rates)
+plt.plot(Dates_4,Bit_rates_4)
+plt.plot(Dates_5,Bit_rates_5)
 plt.title("Bit Rate Sampled Every Half Hour")
 plt.ylabel("Bit Rate (Mb/s)")
+plt.legend(["4G Rate"," 5G Rate"])
 plt.xticks([])
 
 # Show the plot

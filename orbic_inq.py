@@ -89,6 +89,10 @@ def set_mode(con_file: str, mode: str):
     return
 
 file_name = "orbic_config.txt"
+main_page = "http://192.168.1.1/common/login.html"
+net_page = "http://192.168.1.1/html/networks.html"
+psw = "993da0ef"
+write_config(main_page,net_page,psw,file_name)
 tech = check_mode(file_name)
 print(tech)
 
