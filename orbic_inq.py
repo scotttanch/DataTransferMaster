@@ -30,7 +30,7 @@ def check_mode(con_file: str) -> str:
     main_page, _, adm_psw = hotspot_config(con_file)
     FFops = Options()
     #might need to change this
-    FFops.add_argument("--headless")
+    FFops.headless = True
     driver = webdriver.Firefox(options=FFops)
 
     # Open the main page
@@ -61,7 +61,7 @@ def set_mode(con_file: str, mode: str):
 
     main_page, network_page, adm_psw = hotspot_config(con_file)
     FFops = Options()
-    FFops.add_argument("--headless")
+    FFops.headless = True
     driver = webdriver.Firefox(options=FFops)
 
     # Open the main page
