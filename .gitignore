@@ -131,3 +131,6 @@ dmypy.json
 # Folders to ignore
 reports/
 testing/
+
+# Config Files
+orbic_config.txt
