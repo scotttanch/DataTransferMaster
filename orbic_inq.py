@@ -32,7 +32,6 @@ def check_mode(con_file: str) -> str:
     FFops = Options()
     FFops.add_argument("-headless")
     driver = webdriver.Firefox(options=FFops)
-    driver.implicitly_wait(20)
 
     # Open the main page
     driver.get(main_page)
