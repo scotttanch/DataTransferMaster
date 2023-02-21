@@ -3,6 +3,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support.expected_conditions import text_to_be_present_in_element
 
 def hotspot_config(con_file: str):
     try:
@@ -44,7 +45,8 @@ def check_mode(con_file: str) -> str:
 
     # find the technology field on the main page
     #current_val = driver.find_element(By.ID,"technology")
-    current_val = WebDriverWait(driver, timeout=30).until(lambda d: d.find_element(By.ID,"technology"))
+    WebDriverWait(driver, timeout=30).until(text_to_be_present_in_element((By.ID,'technology'),'G'))
+    current_val = driver.find_element(By.ID,"technology")
     tech = current_val.text
 
     driver.close()
