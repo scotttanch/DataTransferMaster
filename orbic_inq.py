@@ -29,13 +29,13 @@ def check_mode(con_file: str) -> str:
 
     main_page, _, adm_psw = hotspot_config(con_file)
     FFops = Options()
-    #might need to change this
-    #FFops.headless = True
-    driver = webdriver.Firefox()
+    FFops.add_argument("-headless")
+    driver = webdriver.Firefox(options=FFops)
+    driver.implicitly_wait(20)
 
     # Open the main page
     driver.get(main_page)
-
+    
     # Enter the password
     pass_input = driver.find_element(By.NAME,"password")
     pass_input.clear()
@@ -44,7 +44,6 @@ def check_mode(con_file: str) -> str:
 
     # find the technology field on the main page
     current_val = driver.find_element(By.ID,"technology")
-    print(current_val.text)
     tech = current_val.text
 
     driver.close()
@@ -61,8 +60,9 @@ def set_mode(con_file: str, mode: str):
 
     main_page, network_page, adm_psw = hotspot_config(con_file)
     FFops = Options()
-    FFops.headless = True
+    FFops.add_argument("-headless")
     driver = webdriver.Firefox(options=FFops)
+    driver.implicitly_wait(20)
 
     # Open the main page
     driver.get(main_page)
