@@ -30,8 +30,8 @@ def check_mode(con_file: str) -> str:
     main_page, _, adm_psw = hotspot_config(con_file)
     FFops = Options()
     #might need to change this
-    FFops.headless = True
-    driver = webdriver.Firefox(options=FFops)
+    #FFops.headless = True
+    driver = webdriver.Firefox()
 
     # Open the main page
     driver.get(main_page)
