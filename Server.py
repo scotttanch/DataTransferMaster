@@ -5,7 +5,8 @@ import os
 import cv2
 import sys
 
-Host, Port, _, project_directory = tls.configReader()
+server_config = "C:\\Users\\STanch\\Desktop\\Configs\\server_config.txt"
+Host, Port, _, project_directory = tls.configReader(server_config)
 
 def serverHandler():
     print("Waiting for Connection to Client")

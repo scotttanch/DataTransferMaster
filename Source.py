@@ -7,7 +7,7 @@ import os
 import subprocess
 
 # Read the config file first
-source_config = "configs/source_config.txt"
+source_config = "/home/stanch/configs/source_config.txt"
 Host, Port, delay, search_path = tls.configReader(source_config)
 
 def clientHandler(mode: str):
