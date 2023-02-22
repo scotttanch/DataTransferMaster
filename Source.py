@@ -8,7 +8,7 @@ import os
 
 # Read the config file first
 source_config = "/home/stanch/configs/source_config.txt"
-hotspot_config = "/home/stanch/config/orbic_config.txt"
+hotspot_config = "/home/stanch/configs/orbic_config.txt"
 log_file = "/home/stanch/DataTransferMaster/suspects.log"
 
 

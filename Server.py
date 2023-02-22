@@ -10,7 +10,9 @@ server_config = "C:\\Users\\STanch\\Desktop\\configs\\server_config.txt"
 def serverHandler():
 
     Host, Port, _, project_directory = tls.configReader(server_config)
-
+    print(Host)
+    print(Port)
+    print(project_directory)
     print("Waiting for Connection to Client")
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         # Begin listening at the desired port
