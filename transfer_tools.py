@@ -163,7 +163,7 @@ def hotspot_configWriter(main_page: str, network_page: str, adm_psw: str, file_n
         f.write(adm_psw + "\n")
     return
 
-# Returns the current technology as a string
+# Returns the current technology as a string, the actual tech not the preference
 # Args: con_file: str, name of the config file, if not in local folder must be an absolute path
 # Return: tech: str. current network mode. expected 4G, 5G, or no signal
 def check_mode(con_file: str) -> str:
