@@ -106,28 +106,34 @@ def clientHandler(mode: str):
 
 def main():
     # check the current mode and run in that mode
+    set_mode = "4G"
+    print("Checking network mode...")
     mode = tls.check_mode(hotspot_config)
-    clientHandler(mode)
+    if set_mode != mode:
+        print("WARNING Current mode:",mode,"does not match the set mode",set_mode)
+    clientHandler(set_mode)
 
     # check the mode again at the end of the event, if the mode has changed flag the run as suspect
     post_mode = tls.check_mode(hotspot_config)
     if mode != post_mode:
+        print("Mode does not match pre-execution value")
         date_and_time = datetime.now().strftime("%m-%d_%H-%M")
         with open(log_file, "w+") as f:
             f.writelines("run at ",date_and_time," suspect, mode switched during execution")
     
-        
     
     while True:
         try:
             
             # Switch modes
-            if mode == "5G":
+            if set_mode == "5G":
+                print("Switching to 4G")
                 tls.set_mode(hotspot_config,"4G")
-            elif mode == "4G":
+            elif set_mode == "4G":
+                print("Switching to 5G")
                 tls.set_mode(hotspot_config,"5G")
             else:
-                raise Exception('Unknown Mode',mode)
+                raise Exception('Unknown Mode',set_mode)
             
 
             # Find the correct time to the next event at the quarter hour
@@ -140,9 +146,9 @@ def main():
 
             # Call the actual handler
             pre_mode = tls.check_mode(hotspot_config)
-            clientHandler(mode)
+            clientHandler(set_mode)
             post_mode = tls.check_mode(hotspot_config)
-            if mode != post_mode:
+            if pre_mode != post_mode:
                 date_and_time = datetime.now().strftime("%m-%d_%H-%M")
                 with open(log_file, "w+") as f:
                     f.writelines("run at ",date_and_time," suspect, mode switched during execution")
