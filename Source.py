@@ -132,9 +132,11 @@ def main():
             if set_mode == "5G":
                 print("Switching to 4G")
                 tls.set_mode(hotspot_config,"4G")
+                set_mode = "4G"
             elif set_mode == "4G":
                 print("Switching to 5G")
                 tls.set_mode(hotspot_config,"5G")
+                set_mode = "5G"
             else:
                 raise Exception('Unknown Mode',set_mode)
             
@@ -149,6 +151,8 @@ def main():
             # Call the actual handler
             print("checking current mode...")
             pre_mode = tls.check_mode(hotspot_config)
+            if set_mode != pre_mode:
+                print("WARNING Current mode:",mode,"does not match the set mode",set_mode)
             clientHandler(set_mode)
             print("confirming constant mode...")
             post_mode = tls.check_mode(hotspot_config)
