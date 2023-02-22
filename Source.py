@@ -105,6 +105,7 @@ def clientHandler(mode: str):
     return
 
 def main():
+
     # check the current mode and run in that mode
     set_mode = "4G"
     print("Setting mode to",set_mode)
@@ -118,12 +119,11 @@ def main():
 
     # check the mode again at the end of the event, if the mode has changed flag the run as suspect
     post_mode = tls.check_mode(hotspot_config)
-    if mode != post_mode:
+    if set_mode != post_mode:
         print("Mode does not match pre-execution value")
         date_and_time = datetime.now().strftime("%m-%d_%H-%M")
         with open(log_file, "w+") as f:
             f.writelines("run at ",date_and_time," suspect, mode switched during execution")
-    
     
     while True:
         try:
@@ -138,7 +138,6 @@ def main():
             else:
                 raise Exception('Unknown Mode',set_mode)
             
-
             # Find the correct time to the next event at the quarter hour
             # create a time object
             now = datetime.now()
@@ -157,7 +156,6 @@ def main():
                 date_and_time = datetime.now().strftime("%m-%d_%H-%M")
                 with open(log_file, "w+") as f:
                     f.writelines("run at ",date_and_time," suspect, mode switched during execution")
-
 
         except KeyboardInterrupt:
             break
