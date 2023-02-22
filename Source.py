@@ -134,7 +134,7 @@ def main():
                 tls.set_mode(hotspot_config,"4G")
                 set_mode = "4G"
             elif set_mode == "4G":
-                print("Switching to 5G")
+                print("Switching to 5G") 
                 tls.set_mode(hotspot_config,"5G")
                 set_mode = "5G"
             else:
@@ -156,7 +156,7 @@ def main():
             clientHandler(set_mode)
             print("confirming constant mode...")
             post_mode = tls.check_mode(hotspot_config)
-            if pre_mode != post_mode:
+            if pre_mode != post_mode or pre_mode != set_mode:
                 date_and_time = datetime.now().strftime("%m-%d_%H-%M")
                 with open(log_file, "w+") as f:
                     f.writelines("run at ",date_and_time," suspect, mode switched during execution")
