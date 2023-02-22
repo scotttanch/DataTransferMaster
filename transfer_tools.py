@@ -123,6 +123,13 @@ class DZT_DAT:
 def reportReader():
     return
 
+def configWriter(con_file: str, host, port, delay, path):
+    lines = [host,port,delay,path]
+    with open(con_file, "w+") as f:
+        for line in lines:
+            f.write(line)
+    return
+
 def configReader(con_file:  str):
     try:
         with open (con_file, 'r') as f:
@@ -137,7 +144,7 @@ def configReader(con_file:  str):
     
     return host, port, delay, path
 
-def hotspot_config(con_file: str):
+def hotspot_configReader(con_file: str):
     try:
         with open (con_file, 'r') as f:
             lines = f.readlines()
@@ -149,7 +156,7 @@ def hotspot_config(con_file: str):
     adm_psw = lines[2]
     return main_page, network_page, adm_psw
 
-def write_config(main_page: str, network_page: str, adm_psw: str, file_name: str):
+def hotspot_configWriter(main_page: str, network_page: str, adm_psw: str, file_name: str):
     with open(file_name, 'w+') as f:
         f.write(main_page + "\n")
         f.write(network_page + "\n")
@@ -161,7 +168,7 @@ def write_config(main_page: str, network_page: str, adm_psw: str, file_name: str
 # Return: tech: str. current network mode. expected 4G, 5G, or no signal
 def check_mode(con_file: str) -> str:
 
-    main_page, _, adm_psw = hotspot_config(con_file)
+    main_page, _, adm_psw = hotspot_configReader(con_file)
     FFops = Options()
     FFops.add_argument("-headless")
     driver = webdriver.Firefox(options=FFops)
@@ -199,7 +206,7 @@ def set_mode(con_file: str, new_mode: str):
     else:
         raise Exception("Unknown network preference", new_mode)
 
-    main_page, network_page, adm_psw = hotspot_config(con_file)
+    main_page, network_page, adm_psw = hotspot_configReader(con_file)
     FFops = Options()
     FFops.add_argument("-headless")
     driver = webdriver.Firefox(options=FFops)
