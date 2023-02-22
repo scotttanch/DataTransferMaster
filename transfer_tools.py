@@ -137,10 +137,10 @@ def configReader(con_file:  str):
     except:
         raise Exception("Config File not found",con_file)
 
-    host = lines[0]
+    host = lines[0].strip()
     port = int(lines[1])
     delay = int(lines[2])
-    path = lines[3]
+    path = lines[3].strip()
     
     return host, port, delay, path
 
