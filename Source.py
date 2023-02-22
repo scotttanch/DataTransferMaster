@@ -10,10 +10,10 @@ import os
 source_config = "/home/stanch/configs/source_config.txt"
 hotspot_config = "/home/stanch/config/orbic_config.txt"
 log_file = "/home/stanch/DataTransferMaster/suspects.log"
-Host, Port, delay, search_path = tls.configReader(source_config)
+
 
 def clientHandler(mode: str):
-
+    Host, Port, delay, search_path = tls.configReader(source_config)
     print("Waiting for Connection to Host")
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:

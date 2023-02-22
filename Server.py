@@ -6,9 +6,11 @@ import cv2
 import sys
 
 server_config = "C:\\Users\\STanch\\Desktop\\Configs\\server_config.txt"
-Host, Port, _, project_directory = tls.configReader(server_config)
 
 def serverHandler():
+
+    Host, Port, _, project_directory = tls.configReader(server_config)
+    
     print("Waiting for Connection to Client")
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         # Begin listening at the desired port
