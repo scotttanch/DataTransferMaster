@@ -107,8 +107,9 @@ def clientHandler(mode: str):
 def main():
     # check the current mode and run in that mode
     set_mode = "4G"
+    print("Setting mode to",set_mode)
     tls.set_mode(hotspot_config,set_mode)
-    
+
     print("Checking network mode...")
     mode = tls.check_mode(hotspot_config)
     if set_mode != mode:
@@ -147,8 +148,10 @@ def main():
             time.sleep(sec_to_wait)
 
             # Call the actual handler
+            print("checking current mode...")
             pre_mode = tls.check_mode(hotspot_config)
             clientHandler(set_mode)
+            print("confirming constant mode...")
             post_mode = tls.check_mode(hotspot_config)
             if pre_mode != post_mode:
                 date_and_time = datetime.now().strftime("%m-%d_%H-%M")
