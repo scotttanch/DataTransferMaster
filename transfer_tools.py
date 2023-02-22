@@ -142,7 +142,7 @@ def hotspot_config(con_file: str):
         with open (con_file, 'r') as f:
             lines = f.readlines()
     except Exception:
-        raise("Config File not found",Exception)
+        raise("Config File not found",con_file)
 
     main_page = lines[0]
     network_page = lines[1]
