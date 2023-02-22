@@ -127,8 +127,8 @@ def configReader(con_file:  str):
     try:
         with open (con_file, 'r') as f:
             lines = f.readlines()
-    except Exception:
-        raise("Config File not found",Exception)
+    except:
+        raise Exception("Config File not found",con_file)
 
     host = lines[0]
     port = int(lines[1])
@@ -141,8 +141,8 @@ def hotspot_config(con_file: str):
     try:
         with open (con_file, 'r') as f:
             lines = f.readlines()
-    except Exception:
-        raise("Config File not found",con_file)
+    except:
+        raise Exception("Config File not found",con_file)
 
     main_page = lines[0]
     network_page = lines[1]
