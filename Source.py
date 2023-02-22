@@ -4,10 +4,12 @@ import time
 from datetime import datetime
 import cv2
 import os
-import subprocess
+
 
 # Read the config file first
 source_config = "/home/stanch/configs/source_config.txt"
+hotspot_config = "/home/stanch/config/orbic_config.txt"
+log_file = "/home/stanch/DataTransferMaster/suspects.log"
 Host, Port, delay, search_path = tls.configReader(source_config)
 
 def clientHandler(mode: str):
@@ -103,12 +105,31 @@ def clientHandler(mode: str):
     return
 
 def main():
-    mode = '5G'
-
+    # check the current mode and run in that mode
+    mode = tls.check_mode(hotspot_config)
     clientHandler(mode)
+
+    # check the mode again at the end of the event, if the mode has changed flag the run as suspect
+    post_mode = tls.check_mode(hotspot_config)
+    if mode != post_mode:
+        date_and_time = datetime.now().strftime("%m-%d_%H-%M")
+        with open(log_file, "w+") as f:
+            f.writelines("run at ",date_and_time," suspect, mode switched during execution")
+    
+        
 
     while True:
         try:
+            
+            # Switch modes
+            if mode == "5G":
+                tls.set_mode(hotspot_config,"4G")
+            elif mode == "4G":
+                tls.set_mode(hotspot_config,"5G")
+            else:
+                raise Exception('Unknown Mode',mode)
+            
+
             # Find the correct time to the next event at the quarter hour
             # create a time object
             now = datetime.now()
@@ -118,7 +139,14 @@ def main():
             time.sleep(sec_to_wait)
 
             # Call the actual handler
+            pre_mode = tls.check_mode(hotspot_config)
             clientHandler(mode)
+            post_mode = tls.check_mode(hotspot_config)
+            if mode != post_mode:
+                date_and_time = datetime.now().strftime("%m-%d_%H-%M")
+                with open(log_file, "w+") as f:
+                    f.writelines("run at ",date_and_time," suspect, mode switched during execution")
+
 
         except KeyboardInterrupt:
             break
