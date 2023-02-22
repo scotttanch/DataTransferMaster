@@ -107,6 +107,8 @@ def clientHandler(mode: str):
 def main():
     # check the current mode and run in that mode
     set_mode = "4G"
+    tls.set_mode(hotspot_config,set_mode)
+    
     print("Checking network mode...")
     mode = tls.check_mode(hotspot_config)
     if set_mode != mode:
