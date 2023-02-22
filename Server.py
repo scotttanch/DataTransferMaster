@@ -5,19 +5,14 @@ import os
 import cv2
 import sys
 
-# TODO: Implement a config file so i can remove system paths and IPs
-# Constants to be configed
+Host, Port, _, project_directory = tls.configReader()
 
 def serverHandler():
     print("Waiting for Connection to Client")
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         # Begin listening at the desired port
-        Host = "192.168.0.197"
-        #Host = '127.0.0.1'
-        Port = 55
         s.bind((Host, Port))
         s.listen()
-        project_directory = 'C:\\Users\STanch\\Desktop\\Surveys\\'
         # Accept connection to the source
         conn, addr = s.accept()
         print("Establishing New Connection...")
@@ -86,19 +81,6 @@ def serverHandler():
 
 def main():
     serverHandler()
-    #This whole timing thing is only relevant to the testing form
-    #while True:
-    #    try:
-    #        # create a time object
-    #        now = datetime.now()
-    #        # find the number of seconds to the next half hour
-    #        sec_to_wait = (15 - (now.minute % 15))*60
-    #        print("Waiting for next event....(" + str(sec_to_wait/60)+ " minutes)")
-    #        time.sleep(sec_to_wait)
-    #        serverHandler()
-    #        gc.collect()
-    #    except KeyboardInterrupt:
-    #        break
     return
 
 

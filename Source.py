@@ -6,15 +6,9 @@ import cv2
 import os
 import subprocess
 
-# TODO: Implement a config file so i can remove system paths and IPs
-# Constants to be configed
-search_path = "/home/stanch/public/DZTs"
-Host = '65.183.134.63'
-#Host = '192.168.1.206'
-Port = 56
-delay = 30
-SSID_5 = "HustonLab5G"
-SSID_4 = "ALIALIEN7127"
+# Read the config file first
+source_config = "configs/source_config.txt"
+Host, Port, delay, search_path = tls.configReader(source_config)
 
 def clientHandler(mode: str):
 
@@ -109,34 +103,12 @@ def clientHandler(mode: str):
     return
 
 def main():
-    
-    mode = None
-    # This whole timing thing is only relevant to the testing form
-    output = subprocess.check_output(['sudo', 'iwgetid']).decode()
-    print("Connected Wifi SSID: " + output.split('"')[1])
-    
-    if output.split('"')[1] == SSID_4:
-        mode = "4G"
-    if output.split('"')[1] == SSID_5:
-        mode = "5G"
+    mode = '5G'
 
     clientHandler(mode)
 
     while True:
         try:
-            
-            # Swith networks before doing anything to give time to get connected?
-            if mode == '4G':
-                mode = '5G'
-                # code to switch to 5G network
-                os.system("nmcli connection down " + SSID_4)
-                os.system("nmcli connection up " + SSID_5)
-
-            else:
-                mode = '4G'
-                os.system("nmcli connection down " + SSID_5)
-                os.system("nmcli connection up " + SSID_4)
-
             # Find the correct time to the next event at the quarter hour
             # create a time object
             now = datetime.now()
@@ -146,8 +118,6 @@ def main():
             time.sleep(sec_to_wait)
 
             # Call the actual handler
-            output = subprocess.check_output(['sudo', 'iwgetid']).decode()
-            print("Connected Wifi SSID: " + output.split('"')[1])
             clientHandler(mode)
 
         except KeyboardInterrupt:
