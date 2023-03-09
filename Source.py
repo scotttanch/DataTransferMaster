@@ -4,16 +4,21 @@ import time
 from datetime import datetime
 import cv2
 import os
-
+from tcp_latency import measure_latency
 
 # Read the config file first
 source_config = "/home/stanch/configs/source_config.txt"
 hotspot_config = "/home/stanch/configs/orbic_config.txt"
 log_file = "/home/stanch/DataTransferMaster/suspects.log"
 
+def latency_check(loc_config: str) -> list:
+    Host, Port, _, _ = tls.configReader(loc_config)
+    latency_list = measure_latency(Host,Port)
+    return latency_list
+
 
 def clientHandler(mode: str):
-    Host, Port, delay, search_path = tls.configReader(source_config)
+    Host, Port, _, search_path = tls.configReader(source_config)
     print("Waiting for Connection to Host")
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -123,7 +128,7 @@ def main():
         print("Mode does not match pre-execution value")
         date_and_time = datetime.now().strftime("%m-%d_%H-%M")
         with open(log_file, "w+") as f:
-            f.writelines("run at ",date_and_time," suspect, mode switched during execution")
+            f.writelines("run at" + date_and_time + "suspect, mode switched during execution")
     
     while True:
         try:

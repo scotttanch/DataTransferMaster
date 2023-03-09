@@ -119,13 +119,33 @@ for date in ticks:
 
 # Print some values
 avg_sending = np.mean(S_Times_4)
+std_sending = np.std(S_Times_4)
 avg_processing = np.mean(P_Times_4)
+std_processing = np.std(P_Times_4)
 avg_bit = np.mean(Bit_rates_4)
+std_bit = np.std(Bit_rates_4)
 avg_round = np.mean(R_Times_4)
-print("Average Time to send: " + str(round(avg_sending,3)) + " (s)")
-print("Average Processing time: " + str(round(avg_processing,3)) +" (s)" )
-print("Average Round Trip: " + str(round(avg_round,3)) + " (s)")
-print("Average Speed: " + str(round(avg_bit,3)) + " (Mb/s)")
+std_round = np.std(R_Times_4)
+print("4G Results")
+print("Average Time to send: " + str(round(avg_sending,3)) + " +/- " + str(round(std_sending,3)) + " (s)")
+print("Average Processing time: " + str(round(avg_processing,3)) + " +/- " + str(round(std_processing,3)) +" (s)" )
+print("Average Round Trip: " + str(round(avg_round,3)) + " +/- " + str(round(std_round,3)) + " (s)")
+print("Average Speed: " + str(round(avg_bit,3)) + " +/- " + str(round(std_bit,3)) + " (Mb/s)")
+
+# Print some values
+avg_sending = np.mean(S_Times_5)
+std_sending = np.std(S_Times_5)
+avg_processing = np.mean(P_Times_5)
+std_processing = np.std(P_Times_5)
+avg_bit = np.mean(Bit_rates_5)
+std_bit = np.std(Bit_rates_5)
+avg_round = np.mean(R_Times_5)
+std_round = np.std(R_Times_5)
+print("4G Results")
+print("Average Time to send: " + str(round(avg_sending,3)) + " +/- " + str(round(std_sending,3)) + " (s)")
+print("Average Processing time: " + str(round(avg_processing,3)) + " +/- " + str(round(std_processing,3)) +" (s)" )
+print("Average Round Trip: " + str(round(avg_round,3)) + " +/- " + str(round(std_round,3)) + " (s)")
+print("Average Speed: " + str(round(avg_bit,3)) + " +/- " + str(round(std_bit,3)) + " (Mb/s)")
 
 # Response Time subplot
 plt.subplot(2,1,2)
